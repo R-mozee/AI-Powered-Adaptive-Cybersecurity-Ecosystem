@@ -1,0 +1,52 @@
+agent:
+  name: DECOY
+  version: "1.0.0"
+  enabled: true
+  platform: desktop   # DECOY is desktop-only per the spec
+
+honeypots:
+  file_share:
+    enabled: true
+    decoy_directory: "~/.chimera/traps/files"
+    lure_files:
+      - name: "passwords_backup.txt"
+        content_template: "fake_credentials"
+      - name: "bank_accounts_2024.xlsx"
+        content_template: "fake_spreadsheet"
+      - name: "company_secrets.docx"
+        content_template: "empty_office_doc"
+    monitor_access: true      # triggers on open/read/copy
+
+  fake_service:
+    enabled: true
+    services:
+      - type: http
+        port: 8088
+        banner: "Apache/2.2.34"   # old, bait-worthy banner
+      - type: ftp
+        port: 2121
+        banner: "220 FTP server ready"
+    log_connections: true
+
+  canary_token:
+    enabled: true
+    token_dir: "~/.chimera/traps/canaries"
+    callback_host: "127.0.0.1"
+    callback_port: 9999
+
+attacker_analysis:
+  behavior_window_seconds: 300    # group events within 5 min as one session
+  high_threat_actions:
+    - file_read
+    - file_copy
+    - service_connect
+    - canary_triggered
+  export_to_evolve: true
+  evolve_endpoint: "http://localhost:5000/api/evolve/ingest"
+
+database:
+  path: "data/decoy_events.db"
+
+logging:
+  level: INFO
+  file: "logs/decoy.log"
