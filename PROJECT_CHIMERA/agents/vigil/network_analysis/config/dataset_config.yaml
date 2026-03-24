@@ -1,0 +1,47 @@
+dataset:
+  name: cicids2017
+  version: v1
+  task: multiclass_intrusion_classification
+
+source:
+  provider: unb_cic
+  format: csv
+  level: flow
+
+labels:
+  type: multiclass
+  column: Label
+  canonical_mapping:
+    BENIGN: BENIGN
+    DDoS: DDoS
+    DoS Hulk: DoS
+    DoS GoldenEye: DoS
+    DoS slowloris: DoS
+    DoS Slowhttptest: DoS
+    PortScan: PortScan
+    FTP-Patator: BruteForce
+    SSH-Patator: BruteForce
+    Web Attack – Brute Force: WebAttack
+    Web Attack – XSS: WebAttack
+    Web Attack – Sql Injection: WebAttack
+    Bot: Botnet
+    Infiltration: Infiltration
+    Heartbleed: Heartbleed
+
+features:
+  drop_columns:
+    - Flow ID
+    - Source IP
+    - Destination IP
+    - Timestamp
+
+split:
+  strategy: temporal
+  train_days: [Monday, Tuesday, Wednesday, Thursday]
+  test_days: [Friday]
+
+metrics:
+  primary: macro_f1
+  secondary:
+    - per_class_recall
+    - confusion_matrix

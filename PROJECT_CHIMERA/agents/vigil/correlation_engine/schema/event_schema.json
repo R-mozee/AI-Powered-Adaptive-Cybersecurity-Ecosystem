@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-chimera.local/schemas/vigil/correlation_event.json",
+  "title": "VIGIL Correlation Engine Event",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "event_id",
+    "timestamp",
+    "event_type",
+    "source",
+    "entities",
+    "severity",
+    "confidence",
+    "raw"
+  ],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 8 },
+    "timestamp": { "type": "string", "minLength": 10 },
+    "event_type": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1 },
+
+    "severity": { "type": "integer", "minimum": 1, "maximum": 10 },
+    "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+
+    "stage": { "type": ["string", "null"] },
+    "attack_technique": { "type": ["string", "null"] },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+
+    "entities": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "src_ip": { "type": ["string", "null"] },
+        "dst_ip": { "type": ["string", "null"] },
+        "ip": { "type": ["string", "null"] },
+
+        "domain": { "type": ["string", "null"] },
+        "url": { "type": ["string", "null"] },
+
+        "user": { "type": ["string", "null"] },
+        "host": { "type": ["string", "null"] },
+
+        "email_from": { "type": ["string", "null"] },
+        "email_to": { "type": ["string", "null"] }
+      }
+    },
+
+    "raw": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

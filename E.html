@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Project Chimera - AI Cybersecurity</title>
+<link rel="manifest" href="/manifest.json">
+
+<style>
+body{
+    font-family: Arial;
+    background:#081622;
+    color:white;
+    text-align:center;
+    margin:0;
+}
+h1{color:#00eaff;margin-top:20px}
+h3{color:#9fdfff}
+
+.container{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+    padding:20px;
+}
+
+.card{
+    background:#132f4c;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,234,255,0.2);
+}
+
+.status{
+    font-size:18px;
+    font-weight:bold;
+    color:#00ff9c;
+}
+
+ul{list-style:none;padding:0}
+li{
+    background:#0d2236;
+    margin:6px;
+    padding:8px;
+    border-radius:6px;
+    font-size:14px;
+}
+
+button{
+    padding:10px 15px;
+    margin:6px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.scan{background:#00eaff;color:#000}
+.gen{background:#ff9800}
+.resolve{background:#00ff9c;color:#000}
+
+button:hover{
+    opacity:0.85;
+}
+
+.footer{
+    margin:20px;
+    color:#aaa;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>PROJECT CHIMERA</h1>
+<h3>AI-Powered Adaptive Cybersecurity Ecosystem</h3>
+
+<div class="container">
+
+<!-- SYSTEM STATUS -->
+<div class="card">
+<h2>System Status</h2>
+<p class="status" id="status">Loading...</p>
+<p>CPU Usage: <span id="cpu"></span></p>
+<p>Network Activity: <span id="network"></span></p>
+
+<button class="scan" onclick="scanSystem()">Scan System</button>
+<button class="gen" onclick="generateThreat()">Generate Threat</button>
+<button class="resolve" onclick="resolveThreat()">Resolve Threat</button>
+</div>
+
+<!-- ACTIVE THREATS -->
+<div class="card">
+<h2>Active Threats</h2>
+<ul id="threats"></ul>
+</div>
+
+<!-- RESOLVED -->
+<div class="card">
+<h2>Resolved Incidents</h2>
+<ul id="resolved"></ul>
+</div>
+
+<!-- AI AGENT -->
+<div class="card">
+<h2>AI Agent Activity</h2>
+<p>✔ Behaviour Monitoring</p>
+<p>✔ Anomaly Detection</p>
+<p>✔ Adaptive Learning</p>
+<p>✔ Auto-Response Enabled</p>
+</div>
+
+</div>
+
+<div class="footer">
+Project Chimera ©  Project
+</div>
+
+<script>
+async function loadData(){
+    const res = await fetch('/api/status');
+    const data = await res.json();
+
+    document.getElementById('status').innerText = data.systemStatus;
+    document.getElementById('cpu').innerText = data.cpu;
+    document.getElementById('network').innerText = data.network;
+
+    let t=document.getElementById('threats');
+    t.innerHTML="";
+    data.activeThreats.forEach(x=>{
+        let li=document.createElement('li');
+        li.innerText=x;
+        t.appendChild(li);
+    });
+
+    let r=document.getElementById('resolved');
+    r.innerHTML="";
+    data.resolved.forEach(x=>{
+        let li=document.createElement('li');
+        li.innerText=x;
+        r.appendChild(li);
+    });
+}
+
+async function scanSystem(){
+    await fetch('/api/scan');
+    alert("System Scan Completed");
+}
+
+async function generateThreat(){
+    await fetch('/api/generate');
+}
+
+async function resolveThreat(){
+    await fetch('/api/resolve');
+}
+
+setInterval(loadData,2000);
+loadData();
+
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/service-worker.js');
+}
+</script>
+
+</body>
+</html>

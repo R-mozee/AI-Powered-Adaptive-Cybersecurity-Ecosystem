@@ -1,0 +1,43 @@
+rules:
+  - id: R001
+    name: phishing_followed_by_malware_download
+    description: Phishing detected then malware download within 1 hour, same user or same domain.
+    enabled: true
+    severity: high
+    confidence: 0.85
+    max_span: 2h
+    sequence:
+      - event_type: phishing_detected
+        where:
+          min_confidence: 0.60
+      - event_type: malware_download
+        within: 1h
+        same: ["entities.user", "entities.domain"]
+
+  - id: R002
+    name: port_scan_then_exploit_attempt
+    description: Port scan followed by exploit attempt within 30 minutes, same destination IP.
+    enabled: true
+    severity: critical
+    confidence: 0.90
+    max_span: 1h
+    sequence:
+      - event_type: port_scan
+        where:
+          min_severity: 3
+      - event_type: exploit_attempt
+        within: 30m
+        same: ["entities.dst_ip"]
+
+  - id: R003
+    name: suspicious_domain_then_dns_tunneling
+    description: Domain flagged then dns_tunneling within 20 minutes, same domain.
+    enabled: true
+    severity: high
+    confidence: 0.80
+    max_span: 1h
+    sequence:
+      - event_type: domain_flagged
+      - event_type: dns_tunneling
+        within: 20m
+        same: ["entities.domain"]
